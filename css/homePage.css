@@ -1,0 +1,150 @@
+body{ 
+    font-family:Arial, Helvetica, sans-serif;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow-x:hidden;
+
+    color: white;
+
+}
+
+body > *{
+    width: 100%;
+}
+
+header{
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+
+}
+
+
+nav > ul{
+
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+
+    list-style-type: none;
+
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content: flex-start;
+}
+
+nav > ul > li{
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+a{
+    color: inherit;
+    text-decoration: none;
+}
+
+a:visited{
+    color: inherit;
+    text-decoration: none;
+}
+
+
+
+#blog-post-tiles{
+
+    display: flex;
+    flex-direction: row;
+
+    align-items: center;
+    justify-content:center;
+
+    flex-wrap:wrap;
+
+}
+
+.blog-post-tile{
+
+    display: flex;
+    flex-direction: column;
+
+    text-decoration: none;
+
+    width: 500px;
+
+    border-radius: 3px;
+    border: 1px solid rgba(109, 109, 109, 0.301);
+    margin: 1%;
+    padding: 1em;
+
+    background-color: white;
+    color: gray;
+
+    transition: all 0.25s;
+
+}
+
+.blog-post-tile:hover{
+    padding-top: 1.4em;
+    padding-bottom: 1.4em;
+    background-color: rgb(212, 212, 212);
+}
+
+.blog-post-tile-header > *{
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.blog-post-thumbnail{
+    width: 200px;
+    height: auto;
+    border: 1px solid rgba(109, 109, 109, 0.301);
+    padding: 0.5em;
+}
+
+.blog-post-tile-body{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.blog-post-tile-body > *{
+    margin: 0;
+}
+
+.posted-date{
+    font-size: 12px;
+    color: gray;
+}
+
+
+header{
+    background-color: gray;
+    padding: 1em;
+
+    height: 300px;
+
+    color: white;
+}
+
+footer{
+
+    background-color: gray;
+    padding: 1em;
+
+}
+
+footer > ul{
+    text-decoration: none;
+    list-style-type: none;
+}
