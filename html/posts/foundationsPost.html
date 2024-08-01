@@ -42,15 +42,129 @@
             <p>
                 In the <a href="../about.html">About</a> page for this blog I discussed my reasoning behind using Monogame to build the project so if you're curious about my thoughts on that I would point you over
                 that way. However, not everyone is familiar with Monogame so instead of explaining myself again I'll use this space to give more context into what Monogame is and what it looks like
-                to use in practice. <br> Monogame is sort of a continuation of the old XNA framework used back in the days of Xbox Live Arcade. As a result of that a lot of XNA tutorials can
+                to use in practice.
+            </p> 
+            <img src="../../assets/monogameWithURL.JPG">
+            <p>
+                Monogame is sort of a continuation of the old XNA framework used back in the days of Xbox Live Arcade. As a result of that a lot of XNA tutorials can
                 be largely applied to Monogame when trying to find solutions or fix problems. Now it is maintained by the community and has no affiliation with Microsoft (as far as I know). Monogame
                 runs using the .Net ecosystem which for me means using C# although I believe it works with F# and Visual Basic as well. Monogame is a <i>framework</i> not an engine, even though you may find it
                 recommended when searching "Best game engines for 2D development" or something similar. This means it has no editor for scenes, no editor for anything actually, no out-of-the-box game object scripting system,
                 etc. Monogame has few opinions on how things should be done. Its biggest weaknesses are also it biggest strengths however. Having no built in editor leaves you open to using whatever tools
                 you want, or lets you make your own editor. Having no game object scripting means you can organize your game code however you would like, including setting up a scripting system from scratch if you would
-                like. For me it helps cross the boundary from "knowing Unity" or "knowing Game Maker" (valuable skills mind you) to "knowing game programming" or just "programming" as a more fundamental skill.
-                This is more in-line with what I want for myself at a personal level.
+                like. For me it helps cross the boundary from "knowing Unity" or "knowing Godot" (valuable skills mind you) to "knowing game programming" or just "programming" as a more fundamental skill.
+                This is more in-line with what I want for myself at a personal level. Traditional full package game engines are amazing and great for shear productivity, but I wasn't satisfied being
+                beholden to a tool so much that I wasn't sure if I could make games at all if they were taken away from me. Additionally not all engines are open-source like Godot so many problems
+                could never be under my control which, to be honest, shouldn't be a problem 90% of the time but it is something to consider. I would promote the advice I've heard: Use an engine 
+                if your absolute priority is the game itself, mess around at a lower level if youre interested in using it as a self-education experience or you're so experienced doing that,
+                that it will actually be more efficient for you. Anyway, enough about framework choice.
             </p>
+
+            <h3>Game design considerations</h3>
+            <p>
+                Any technical decision about a game has to be informed by the game's design and needs. Not all games are the same. Many share similar qualities and face standard problems: "how do
+                I render drawings to the screen?", "how will my game play audio?", "how does my game capture input from the user?", "how will my code run on this or that platform?", etc. 
+                These standard problems are problems I will face and discuss, but many people far smarter than me have discussed them already in terms of their technical detail. So I want to take
+                a different approach and discuss these problems on closer terms to how I will interact with them. Which is to say: "How will I organize my solutions to these problems?" 
+                The truth is, engineering software doesn't always (and in some cases frequently won't) involve creating brand new solutions to problems, but will instead ask the engineer to
+                consider the specific problems of their project and organize time-tested solutions in the most logical/beneficial/optimal way. 
+            </p>
+
+            <p>
+                What I plan to spend far more time discussing are the problems that are more unique to my project. So as I alluded to last paragraph, let me explain some of the unique qualities
+                I plan on my game having.
+            </p>
+
+            <ul>
+                <li>
+                    <h3>Top-Down 2D Perspective and 3D space</h3>
+                    <figure>
+                        <img src="../../assets/crosscodeScreenshot1.jpg" />
+                        <figcaption>A screenshot of CrossCode gameplay showcasing 2D visuals with 3D space</figcaption>
+                    </figure>
+                    <p>
+                        Many games have this perspective, from most 2D Zelda games, to almost all SNES RPGs, to a collection of modern indie games. I list this as a unique quality
+                        because I plan on having my game simulate aspects of 3D space for the purposes of improving exploration. I have always been fascinated by the concept of
+                        2D games. They capture an imaginative quality that I don't think 3D games embody in the same way. When you make something closer to
+                        realism (shift from a 2D abstraction of a space to a 3D one) you don't ask the player to engage with their imagination in the same way. I spent time as a kid
+                        trying to imagine what sprites in the NES Legend of Zelda were supposed to be, dreaming up my own Mario levels, scouring the routes of Pokemon games, and exploring
+                        the continents of Final Fantasy games. One thing I would not describe these games as (besides the original LOZ) is "open" or "open world". They teased an open world
+                        <i>idea</i> but in truth were largely linear. So I wanted to explore the idea of exploring 2D space in a way closer to how we engage with modern open world games like
+                        Breath of the Wild which in itself was designed to be a callback to the 2D inception of the series. In a way, I hope to take this design full circle.
+                    </p>
+                    <p>
+                        In order to aid this goal, I plan on having pseudo 3D space similar to the Mario and Luigi RPGs or the excellent indie game: CrossCode. I have already begun implementing
+                        parts of this vision so I wont speculate too much on how I might do it and just save that for a future post. However, my implementation may change in the future. Anyway,
+                        speaking of exploration...
+                    </p>
+                </li>
+                <li>
+                    <h3>Exploration</h3>
+                    <figure>
+                        <img src="../../assets/breathOfTheWildPrototypeScreenshot.JPG">
+                        <figcaption>A screenshot of the GDC Breath of the Wild prototype talk.</figcaption>
+                    </figure>
+                    <p>
+                        This game concept actually began as me wanting to make a game that was sort of a de-make of Breath of the Wild (an idea I might visit again in the future). So besides the
+                        game being 2D I also have to consider technical requirements of larger, more open spaces. I don't know if the game will be the true "loading zone-less" open world mega game
+                        that Breath of the Wild is, but I do plan on having at least large open zones even if those zones have loading zones between them. This will mean some time (a lot of time) will
+                        be spent on resource management systems. I can't just load all of the game's content at all times even though that would be awfully convenient. So core systems will be designed 
+                        with easy asset loading and unloading in mind. I'll also then need to create systems that can know what groups of content are needed to be loaded in what chunks/zones/areas. Will these
+                        systems be automated? Will I hand fill the data for these systems? Who knows yet, it will likely be decided by my workflow and what is too slow from a development standpoint, but I see a hazy idea of what I need to do forming there.
+                    </p>
+                </li>
+                <li>
+                    <h3>World Construction</h3>
+                    <p>
+                        I won't go into much detail here because this is really just a sub-point about the whole 3D space thing. I wanted to emphasize this point though because of <b>how</b> 
+                        important it is. Pseudo 3D space will likely inform almost every aspect of the game. Not to spoil anything, but when going from 2D to 3D you add an extra axis: a Z (or Y depending on how to look at it)
+                        axis. Flat space will now have <i>height</i>. Remember the word 'height' because I won't shut up about it for probably until this game is done or shelved. Height will
+                        need to be implied in visuals, it will need to be simulated in code, it will need to be readable for the player, and it will be the biggest problem-child for anything involving the world.
+                    </p>
+                </li>
+                <li>
+                    <h3>Top-Down <i>2-Dimentional</i> Perspective</h3>
+                    <p>
+                        If 3D space gets a sub point, so does 2D perspective. Its only fair.
+                    </p>
+                    <p>
+                        With all this talk about 3D-this and 3D-that you may be wondering why not just use... 3D? This ties back into my point about 2D games inspiring me in ways
+                        3D games can't. 2D, to me, inspires not just imagination, but a simplicity that made me want to make games in the first place. 3D has like, math? Like a lot of
+                        linear algebra? Lots of complex physics? Lots of trig? Lots of more complicated lighting and rendering? Dont get me wrong I took math all the way through Calc 2, but that doesn't make it any more friendly on the surface.
+                        2D games seem so much easier to make from a users perspective (even though in truth they face a ton of identical issues). I want that type of approachability to be felt in
+                        the design.
+                    </p>
+                    <p>
+                        Well then, you may ask, why not just use 3D rendering but present as 2D? I dont have nearly as easy an answer for that criticism. Partly just to prove to myself
+                        that it can be done? I'm sure lots of other developers have probably done it both ways, so I doubt it will be impossible. But in truth if it came down to it, I would
+                        rework the game to utilize more 3D rendering if it just became too heavy of a premise for me to carry. Lots of 2D renderers are really just 3D renderers in disguise,
+                        wether that is in implementation or in concept. But to make the answer very short: simplicity. I'm one guy. Just one dude. Just a guy sitting in my chair typing 
+                        an ungodly amount of words to make a game run. 3D can add more overhead especially on the learning-front, or at least it seems that way. If I'm dead wrong then hey,
+                        it'll be a lesson learned and likely never forgotten.
+                    </p>
+                </li>
+                <li>
+                    <h3>Art Style</h3>
+                    <figure>
+                        <img src="../../assets/artStylesBoard.jpg" />
+                        <figcaption>Art style inspirations: Top-Left: Wonder Boy: The Dragons Trap. Top-Right: Hollow Knight. Bottom-Left: Streets of Rage 4. Bottom-Right: Links Awakening (Switch obvs)</figcaption>
+                    </figure>
+                    <p>
+                        Ill keep this one short and sweet. I plan on having a 2D illustrative kind of art style. Think Hollow Knight, Wonder Boy Remake, Streets of Rage 4. I know those games have
+                        different styles but the point is that are illustrations and vaguely cartoony. So no pixel art unless it is used sparingly. I like pixel art and actually learned any art skills
+                        I have from doing pixel art. But it got so overdone that I don't think I want to do it anymore, not for this project. For technical considerations this means larger images = more
+                        pixels to render = more optimizing to make sure everything runs buttery smooth. Optimizing for performance won't be tackled for a long time though so this is just something to
+                        think about. 
+                    </p>
+                </li>
+            </ul>
+
+            <p>
+                Thats basically all the topics I wanted to shotgun in this post. Hopefully they provide enough context in their own right to clarify future topics without needing heavy 
+                context-paragraphs. I'll probably make a page just for the game design, as it stands at the present day and how it has changed over the time of me working on it. Anyway
+                the next post I'll write will probably be about <i>height</i> and <i>maps</i> so I'll dive into that.
+            </p>
+
 
         </div>
 
