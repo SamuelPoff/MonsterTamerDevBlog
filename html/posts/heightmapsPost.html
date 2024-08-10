@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Monster Tamer Dev Blog | Heightmaps</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../../css/homePage.css" >
+        <link rel="stylesheet" href="../../css/post.css" >
+    </head>
+    <body>
+        
+        <header>
+            <h1>Monster Tamer Dev Blog</h1>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Art</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="postContainer">
+
+            <h1>Heightmaps</h1>
+            <p>
+                As promised, the next post is going to explain one of the core foundations of the game: Heightmaps. With the game consisting of 2D sprites and visuals,
+                but a world that simulates 3D space, a heightmap is a very simple way of representing the terrain data for the world. In this case the heightmap will be
+                represented by instances of a Heightmap class. Since this post is written after the fact, I could just show the end result but that would be boring and unhelpful.
+                So instead I'll run through some of my main considerations for the design of the heightmap as if I was coding it from scratch to show what the process looked like when I
+                was making it. First, however, I need to explain a bit more about how I intend for this to coalesce into an actual game world.
+            </p>
+
+            <h3>How a Heightmap Will Represent the World</h3>
+            <p>
+                The heightmap at its core will just be a 2D map of cells, with each cell having a value representing how far from the "base" ground level that cell is up.
+            </p>
+
+            <figure>
+                <img src="../../assets/heightmapDiagram1.jpg" >
+                <figcaption>Diagram of how to visualize a heightmap for the game.</figcaption>
+            </figure>
+
+            <p>
+                As with anything, a MSPaint diagram must be drawn before moving forward. I don't make the rules. This example 4x4 heightmap shows a very small example of how this data
+                can be visualized into something that could maybe resemble an old tile based game. In this example to emphasize the depth I didn't align the final heights with the
+                grid. In actuality, in the context of the game it would be more accurate to visualize it like this:
+            </p>
+
+            <figure>
+                <img src="../../assets/heightmapDiagram2.jpg" >
+                <figcaption>Visualization showing grid alignment.</figcaption>
+            </figure>
+
+            <p>
+                By pointing out the importance of the grid-alignment, that may have also clued you in that this can be rendered in game with a tilemap. Obviously the heightmap itself
+                will never be drawn (other than for debugging purposes if needed), so a complimentary map, the tilemap, will be made corresponding to the heightmap. This may ring alarm bells
+                though, since a change in the heightmap would then require potentially large changes in the tilemap. This will create a work-flow nightmare right? If I was to construct these 
+                from scratch every time then yeah, it would be scary to make any change to a heightmap once I have started mapping a tilemap over it. Thats why tooling will be so crucial.
+                I'll need to create (and actually as of the time of writing this, have nearly finished) tools for automating parts of constructing these maps. A heightmap creation tool that
+                will be able to use a tileset and auto generate a base terrain tilemap of the heightmap. After, I'll be able to add handmade touches to the map. Ideally, if changes
+                occur to the heightmap I'll be able to write code that can isolate affected sections of the tilemap and auto generate just those sections again. This isn't about 
+                tooling though so I'll pick that discussion up again some other time.
+            </p>
+
+            <h3>Designing the Heightmap class</h3>
+            <p>
+                At the time of originally making this, the game had very few systems in place. For me that meant I could construct this almost any way I wanted to. I could use
+                object-oriented features like classes, inheritance, polymorphism. Or I could opt for a more procedural style, making my code structure more similar to a C project. 
+                <b>OR</b> I could begin moving the project toward a data oriented design, after all I'm at the beginning of my project so the precedent I set here could decide what
+                patterns I continue to use in the future. I chose to not really hard commit to any of these in particular which is a weak answer, but since it was the beginning of my
+                project I had no clue which design style would benefit my project the most. C# is a language with object oriented features and it pushes them on you pretty heavily.
+                However this doesn't mean all of the design <b>has</b> to follow OOP to the letter. After all a lot of OOP's strengths come from its organization and encapsulation, which 
+                shines the best when its used on a team. I'm coding by myself, however, so a lot of those benefits wouldn't exactly mean a <i>ton</i> for me. However, data oriented 
+                design (which I'm going to call DoD from now on) would be somewhat difficult to fully achieve too since C# is garbage collected. C# has tools for memory management but 
+                it goes so against the core fundamentals of the language I would've been better off using C++ if I wanted to <i>really</i> commit to that. So I landed on just kind of 
+                hacking some stuff together to see if a paradigm emerged from what was easiest to implement. 
+            </p>
+
+            <p>
+                So all of that is to say: I'm using C# a language with many object oriented features, but that doesn't mean my design has to be object <b>oriented</b>. Instead I suppose its object 
+                <b>utilizing</b>.
+            </p>
+
+        </div>
+
+        <footer>
+            <ul>
+                <li>Some footer info</li>
+                <li>My contact info idk</li>
+                <li>Social media I dont have</li>
+                <li>other links?</li>
+                <li>a link to a contact me page?</li>
+                <li>Other</li>
+            </ul>
+        </footer>
+
+        
+    </body>
+</html>
