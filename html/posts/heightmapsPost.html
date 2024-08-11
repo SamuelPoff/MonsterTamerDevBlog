@@ -67,7 +67,7 @@
                 tooling though so I'll pick that discussion up again some other time.
             </p>
 
-            <h3>Designing the Heightmap class</h3>
+            <h3>Design/Architecture Considerations</h3>
             <p>
                 At the time of originally making this, the game had very few systems in place. For me that meant I could construct this almost any way I wanted to. I could use
                 object-oriented features like classes, inheritance, polymorphism. Or I could opt for a more procedural style, making my code structure more similar to a C project. 
@@ -82,8 +82,92 @@
             </p>
 
             <p>
-                So all of that is to say: I'm using C# a language with many object oriented features, but that doesn't mean my design has to be object <b>oriented</b>. Instead I suppose its object 
-                <b>utilizing</b>.
+                So all of that is to say: I'm using C# a language with many object oriented features, but that doesn't mean my design has to be fully object <b>oriented</b>. Instead I suppose its object 
+                <b>utilizing</b>. I want to do this as experiment to see if this design style is faster to develop/more efficient for the game's performance. If it ends poorly, it will be
+                a great lesson learned in how not to architect software (or at least how not to architect a Monogame project). With all that out of the way lets continue on!
+            </p>
+
+            <h3>Heightmap class</h3>
+            <p>
+                As said earlier, the heightmap will be represented by instances of a class. In C# this is the most standard way of doing things, so nothing crazy here. There are other 
+                options technically though: I could make a static singleton class that hangs around in global space. This would make accessing the heightmap very easy but could
+                lead to difficulty tracking bugs. As for a pro, to use this structure for the heightmap would mean that all that would need to be done is to overwrite the static heightmap's data
+                whenever I would've created a new heightmap instance which could technically be more performant, its less initialization code running, and less garbage collection. However, the
+                cons here massively outweigh the pros. Heightmaps are going to be initialized very infrequently, meaning those "pros" would amount to basically nothing for 99% of the game's runtime.
+                So trading harder code to debug, in this case, is not even close to worth it. 
+            </p>
+
+            <p>
+                Well I have a blank (non-static) class ready to go now. So the first thing to do is figure out what data needs to be represented by this class. Key points are
+                the map size (width,height/columns,rows), and an array of the actual heights.
+            </p>
+
+            <figure>
+                <img src="../../assets/heightmapCodeSample1.JPG" >
+                <figcaption>Basic Heightmap implementation (recreation, I dont have the original code I'm sorry)</figcaption>
+            </figure>
+
+            <p>
+                An array was chosen here because of its lookup time efficiency. For physics calculations a lot of arbitrary positions in the array will need to be read, and games need all
+                the performance they can get so an array will be perfect here. It is not a 2D array because after a little research on Google, I found that apparently 2D arrays are slightly slower
+                to traverse and lookup as opposed to 1D arrays in C#. If had a ton of time I would've checked this fact myself on my machine but its a minor point so I decided to take the internet's word
+                for it. Since a 2D map is being represented by a 1D array a simple indexing system will be worked out. In this case the top right of the map will correspond to index 0, and 
+                the position on the map will follow to the right and down (like reading a book) as indicies increase. I'll add a quick couple utility methods to simplify this logic:
+            </p>
+
+            <figure>
+                <img src="../../assets/heightmapCodeSample2.JPG" >
+                <figcaption>Added utility methods to the bottom of the class</figcaption>
+            </figure>
+
+            <p>
+                Comments will be omitted from most code snippets to save space, but in this case I would have included a quick comment since it might not be instanty obvious
+                what these methods mean or how they work. In short: the GetIndexFromCoord(int column, int row) method takes a coord in the map and does some math to give the 
+                index into the 1D array that coord represents. The other two methods do the reverse: they take an index into the 1D array and do some math to return
+                the column and row respectively.
+            </p>
+
+            <p>
+                So this class is in an extremly simple form, but it technically has all the data it needs. It's missing protections for invalid parameters, clear ways of accessing 
+                the important data, and like tests? maybe? I don't plan on writing automated tests for this super simple data structure (at least not yet) so first I'll add ways to
+                clearly access the important data. Following some basic OOP encapsulation principles, I limit the scope of getters and setters to the minimum they can be while still functioning. 
+                I used C# properties for the Columns and Rows fields since they will have cookie-cutter accessors. First I'll change HeightData to a property like the other two in case it will be better for another section of code to get the raw array. 
+                Then I write another method for getting individual values from the array in a more encapsulated manner with some consideration for invalid parameters. Not all invalid parameters
+                need to always be handled, however, since sometimes the most helpful way of catching bugs during develoment can be for those invalid parameters to sneak in and cause the game
+                to crash, then its VERY obvious where the problem came from. Since it would have to be a mistake on my part if an invalid column or row was passed in, I choose not to handle
+                this error and let the game crash here if something goes wrong (by throwing an unhandled exception) (also obviously don't let things like this through to the final release). 
+            </p>
+
+            <figure>
+                <img src="../../assets//heightmapCodeSample3.JPG" >
+                <figcaption>HeightData changed to a property, GetHeightData(int column, int row) added.</figcaption>
+            </figure>
+
+            <p>
+                Obviously this doesn't follow encapsulation super strictly, but in this early stage I know I will need to be able to inspect the raw HeightData array in several other
+                sections of code and wanted to make that as straightforward as possible. This does leave the risk open of me misusing this level of access somewhere in the codebase, but
+                since I am the only one working on this project I will have the divine knowledge of knowing not to do that, if I was working with others I would potentially take a different
+                approach here. In short: I know this doesn't follow encasulation to the letter but I've thought about the tradeoffs and decided they are worth it (later I'll get to see
+                if it <i>actually</i> works out).
+            </p>
+
+            <p>
+                I could stop the heightmap class here if I wanted to. It checks all the boxes:
+            </p>
+
+            <ul>
+                <li>Contains map size data</li>
+                <li>Contains the actual height data in an efficient manner</li>
+                <li>Provides a simple interface for accessing that data</li>
+            </ul>
+
+            <p>
+                And this would be great if I already had other systems to load heightmaps, fill out their data, etc. But I am starting from nothing so this heightmap is going
+                to end up needing a lot more than this in the end. It will need an interface together for mocking up data for testing, loading data from files, and probably a 
+                bunch of other odds and ends that will only become obvious once I <i>need</i> a certain feature from the interface. So instead of trying to predict the future, I
+                will leave the heightmap here in its simple form, ready to be expanded upon as it becomes <b>actually</b> clear what I need it to do <b>exactly</b>. Now this was written
+                after the fact, so I already know many of the future changes I end up doing to this heightmap class. But this post is supposed to be a breif introduction to the topic of
+                Heightmaps and my thought process around starting to make one from scratch, so I'll leave it there.
             </p>
 
         </div>
