@@ -1,0 +1,11 @@
+.keyword{
+    color: blue;
+}
+
+.typeName{
+    color: rgb(89, 207, 158);
+}
+
+.functionName{
+    color: rgb(224, 203, 109);
+}

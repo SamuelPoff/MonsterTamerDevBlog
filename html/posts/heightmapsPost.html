@@ -9,6 +9,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="../../css/homePage.css" >
         <link rel="stylesheet" href="../../css/post.css" >
+        <link rel="stylesheet" href="../../css/code.css" >
+        <script defer src="../../javascript/codeMarkup.js"></script>
     </head>
     <body>
         
@@ -107,6 +109,29 @@
                 <figcaption>Basic Heightmap implementation (recreation, I dont have the original code I'm sorry)</figcaption>
             </figure>
 
+            <div class="codeSample">
+                <pre>
+                    <span class="keyword">public class</span> <span class="typeName">Heightmap</span> {
+                        <span class="keyword">public int</span> <span class="typeName">Columns</span> {<span class="keyword">get; private set;</span>}
+                        <span class="keyword">public int</span> <span class="typeName">Rows</span> {<span class="keyword">get; private set;</span>}
+                        public int[] HeightData {get; private set;}
+                    
+                        public Heightmap(int columns, int rows) {
+                    
+                            int mapSize = columns*rows;
+                            Columns = columns;
+                            Rows = rows;
+                    
+                            HeightData = new int[mapSize];
+                    
+                            for(int i =0; i < mapSize;++i) {
+                                HeightData[i] = 0;
+                            }
+                    
+                        }
+                </pre>
+            </div>
+
             <p>
                 An array was chosen here because of its lookup time efficiency. For physics calculations a lot of arbitrary positions in the array will need to be read, and games need all
                 the performance they can get so an array will be perfect here. It is not a 2D array because after a little research on Google, I found that apparently 2D arrays are slightly slower
@@ -116,7 +141,7 @@
             </p>
 
             <figure>
-                <img src="../../assets/heightmapCodeSample2.JPG" >
+                <img src="../../assets/heightmapCodeSample2.JPG">
                 <figcaption>Added utility methods to the bottom of the class</figcaption>
             </figure>
 
