@@ -1,11 +1,33 @@
-.keyword{
-    color: blue;
+.codeSample{
+    color: rgb(114, 163, 209);
+    background-color: rgb(245, 245, 245);
+    padding: 2em;
 }
 
-.typeName{
-    color: rgb(89, 207, 158);
+strLit{
+    color: brown;
 }
 
-.functionName{
-    color: rgb(224, 203, 109);
+clsNm{
+    color: rgb(51, 180, 116);
+}
+
+fkw{
+    color: rgb(204, 121, 221);
+}
+
+kw{
+    color: rgb(48, 48, 196);
+}
+
+fn{
+    color: rgb(211, 138, 95);
+}
+
+grp{
+    color: rgb(31, 17, 155);
+}
+
+cmnt{
+    color: rgb(4, 107, 55);
 }

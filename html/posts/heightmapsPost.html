@@ -104,33 +104,26 @@
                 the map size (width,height/columns,rows), and an array of the actual heights.
             </p>
 
-            <figure>
-                <img src="../../assets/heightmapCodeSample1.JPG" >
-                <figcaption>Basic Heightmap implementation (recreation, I dont have the original code I'm sorry)</figcaption>
-            </figure>
-
-            <div class="codeSample">
-                <pre>
-                    <span class="keyword">public class</span> <span class="typeName">Heightmap</span> {
-                        <span class="keyword">public int</span> <span class="typeName">Columns</span> {<span class="keyword">get; private set;</span>}
-                        <span class="keyword">public int</span> <span class="typeName">Rows</span> {<span class="keyword">get; private set;</span>}
-                        public int[] HeightData {get; private set;}
-                    
-                        public Heightmap(int columns, int rows) {
-                    
-                            int mapSize = columns*rows;
-                            Columns = columns;
-                            Rows = rows;
-                    
-                            HeightData = new int[mapSize];
-                    
-                            for(int i =0; i < mapSize;++i) {
-                                HeightData[i] = 0;
-                            }
-                    
-                        }
+                <pre class="codeSample">
+        public class Heightmap {
+            public int Columns {get; private set;}
+            public int Rows {get; private set;}
+            public int[] HeightData {get; private set;}
+        
+            public Heightmap(int columns, int rows) {
+        
+                int mapSize = columns*rows;
+                Columns = columns;
+                Rows = rows;
+        
+                HeightData = new int[mapSize];
+        
+                for(int i =0; i < mapSize;++i) {
+                    HeightData[i] = 0;
+                }
+        
+            }
                 </pre>
-            </div>
 
             <p>
                 An array was chosen here because of its lookup time efficiency. For physics calculations a lot of arbitrary positions in the array will need to be read, and games need all
@@ -140,10 +133,21 @@
                 the position on the map will follow to the right and down (like reading a book) as indicies increase. I'll add a quick couple utility methods to simplify this logic:
             </p>
 
-            <figure>
-                <img src="../../assets/heightmapCodeSample2.JPG">
-                <figcaption>Added utility methods to the bottom of the class</figcaption>
-            </figure>
+            <pre class="codeSample">
+        ...
+
+        public int GetIndexFromCoord(int column, int row){
+            return column + (row * Columns);
+        }
+    
+        public int GetRowFromIndex(int index) {
+            return index / Columns;
+        }
+    
+        public int GetColumnFromIndex(int index){
+            return index % Columns;
+        }
+            </pre>
 
             <p>
                 Comments will be omitted from most code snippets to save space, but in this case I would have included a quick comment since it might not be instanty obvious
@@ -156,22 +160,46 @@
                 So this class is in an extremly simple form, but it technically has all the data it needs. It's missing protections for invalid parameters, clear ways of accessing 
                 the important data, and like tests? maybe? I don't plan on writing automated tests for this super simple data structure (at least not yet) so first I'll add ways to
                 clearly access the important data. Following some basic OOP encapsulation principles, I limit the scope of getters and setters to the minimum they can be while still functioning. 
-                I used C# properties for the Columns and Rows fields since they will have cookie-cutter accessors. First I'll change HeightData to a property like the other two in case it will be better for another section of code to get the raw array. 
-                Then I write another method for getting individual values from the array in a more encapsulated manner with some consideration for invalid parameters. Not all invalid parameters
+                I used C# properties for the Columns and Rows fields since they will have cookie-cutter accessors. So I'll change HeightData to a property like the other two in case it will be better for another section of code to get the raw array. 
+                Even though its "setter" is set to private that wont really matter since the reference to the array is what's being passed, so the actual data in the array could still be messed with. Then I write another method for getting individual values from the array in a more encapsulated manner with some consideration for invalid parameters. Not all invalid parameters
                 need to always be handled, however, since sometimes the most helpful way of catching bugs during develoment can be for those invalid parameters to sneak in and cause the game
                 to crash, then its VERY obvious where the problem came from. Since it would have to be a mistake on my part if an invalid column or row was passed in, I choose not to handle
                 this error and let the game crash here if something goes wrong (by throwing an unhandled exception) (also obviously don't let things like this through to the final release). 
             </p>
 
-            <figure>
-                <img src="../../assets//heightmapCodeSample3.JPG" >
-                <figcaption>HeightData changed to a property, GetHeightData(int column, int row) added.</figcaption>
-            </figure>
+            <pre class="codeSample">
+        ...
+
+        public int[] HeightData {get; private set;} //Changed to property (remember the array data is not protected, only the reference)
+
+        public Heightmap(int columns, int rows) {
+    
+            int mapSize = columns*rows;
+            Columns = columns;
+            Rows = rows;
+    
+            HeightData = new int[mapSize];
+    
+            for(int i =0; i < mapSize;++i) {
+                HeightData[i] = 0;
+            }
+    
+        }
+    
+        public int GetHeightData(int column, int row){ 
+            if (column < 0 || row < 0 || column >= Columns || row >= Rows)
+                throw new Exception("Invalid column or row was passed"); //Unhandled exception so the game crashes (but allows code calling this to optionally handle this)
+    
+            return HeightData[GetIndexFromCoord(column, row)];
+        }
+
+        ...
+            </pre>
 
             <p>
                 Obviously this doesn't follow encapsulation super strictly, but in this early stage I know I will need to be able to inspect the raw HeightData array in several other
                 sections of code and wanted to make that as straightforward as possible. This does leave the risk open of me misusing this level of access somewhere in the codebase, but
-                since I am the only one working on this project I will have the divine knowledge of knowing not to do that, if I was working with others I would potentially take a different
+                since I am the only one working on this project I will have the divine knowledge of knowing not to do that, if I was working with others I would take a different
                 approach here. In short: I know this doesn't follow encasulation to the letter but I've thought about the tradeoffs and decided they are worth it (later I'll get to see
                 if it <i>actually</i> works out).
             </p>
@@ -181,16 +209,16 @@
             </p>
 
             <ul>
-                <li>Contains map size data</li>
-                <li>Contains the actual height data in an efficient manner</li>
-                <li>Provides a simple interface for accessing that data</li>
+                <li>-Contains map size data</li>
+                <li>-Contains the actual height data in an efficient manner</li>
+                <li>-Provides a simple interface for accessing that data</li>
             </ul>
 
             <p>
                 And this would be great if I already had other systems to load heightmaps, fill out their data, etc. But I am starting from nothing so this heightmap is going
-                to end up needing a lot more than this in the end. It will need an interface together for mocking up data for testing, loading data from files, and probably a 
+                to end up needing a lot more than this in the end. It will need functions for mocking up data for testing, loading data from files, and probably a 
                 bunch of other odds and ends that will only become obvious once I <i>need</i> a certain feature from the interface. So instead of trying to predict the future, I
-                will leave the heightmap here in its simple form, ready to be expanded upon as it becomes <b>actually</b> clear what I need it to do <b>exactly</b>. Now this was written
+                will leave the heightmap here in its simple form, ready to be expanded upon as it becomes <b>actually</b> clear what I need it to do, <b>exactly</b>. Now this was written
                 after the fact, so I already know many of the future changes I end up doing to this heightmap class. But this post is supposed to be a breif introduction to the topic of
                 Heightmaps and my thought process around starting to make one from scratch, so I'll leave it there.
             </p>
