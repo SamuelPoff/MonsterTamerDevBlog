@@ -30,3 +30,5 @@ for(let i = 0; i < codeSamples.length; ++i){
     codeSample.innerHTML = newHtml;
 
 }
+
+console.log("Finish");
