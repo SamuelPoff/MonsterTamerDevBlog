@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Monster Tamer Dev Blog | Misc Topics</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../../css/homePage.css" >
+        <link rel="stylesheet" href="../../css/post.css" >
+    </head>
+    <body>
+        
+        <header>
+            <h1>Monster Tamer Dev Blog</h1>
+            <nav>
+                <ul>
+                    <li><a href="../index.html">Home</a></li>
+                    <li><a href="../about.html">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">Art</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="postContainer">
+
+            <h1>Those Other Odds and Ends</h1>
+            <p>
+                In the post about integrating ImGuiNET I talked about a grab-bag of things I worked on before I had made it to that point. None of those things
+                were big enough or interesting enough to cover on their own, so I'm going to combine them into one post. I could skip talking about them but they are pretty
+                important core things a game needs so it would feel weird to just not mention them at all. So lets start with:
+            </p>
+
+            <h2>Sprites</h2>
+            <p>
+                Sprites are something that 95% of people who play games have heard of. They are the little 2D images that comprise a lot of the visuals of a 2D game, but can be used in 3D
+                as well. There is a very cool and very technical definition that distinguishes sprites from other 2D redered things, but no one cares about definitions. So for these purposes
+                think of a sprite as the 2D render of some image that will become part of a bigger thing (such as a game wow!). 
+            </p>
+
+            <p>
+                Now sprites are used extremely commonly, especially in 2D games, so as with a lot of things when making a game: it needs to be efficient. That doesn't mean I'll sit here 
+                optimizing every little aspect of it, that would be called premature optimization and is usually bad. It does mean I'll consider obvious performance problems as I write
+                the first "draft" of the sprite. This requires some knowledge of how computer graphics work, at least to some basic level. I'm not a computer graphics wiz or anything (You could
+                spend a whole carrer learning and understanding graphics), but the basics aren't too hard to understand, especially in the context of Monogame where most of it is abstracted.
+                As a side note: this project uses the OpenGL renderer so if I mention anything specific about the rendering its coming from an OpenGL perspective, but most renderers share
+                common principles. Anyway lets just start implementing a sprite and I'll bring up problems as I go.
+            </p>
+            
+            <p>
+                So the goal of a sprite is to be able to draw an image at a location either on the screen or in the game world (to then be hopefully displayed on the screen). 
+                This is a super simple premise that has basically as simple of an implementation once all the rendering specific stuff is abstracted out:
+            </p>
+
+            <pre class="codeSample">
+public class Sprite : IDrawable
+    {
+
+        public Texture2D Texture;
+        public Vector2 Position = Vector2.Zero;
+        public Vector2 Offset = Vector2.Zero; //Drawing offset (Not a physical offset that would affect physical properties such as draw order)
+
+
+        public Sprite(Texture2D texture, Vector2 startingPos = Vector2.Zero) {
+
+            Texture = texture;
+            Position = startingPos;
+
+        }
+
+        public void Draw(SpriteBatch spritebatch) {
+
+            Rectangle sourceRect = new Rectangle(0, 0, Texture.Width, Texture.Height);
+            Rectangle destRect = new Rectangle((int)(Position.X + Offset.X), (int)(Position.Y - Position.Z + Offset.Y), sourceRect.Width * GameProperties.Scale, sourceRect.Height * GameProperties.Scale);
+
+            spritebatch.Draw(Texture, destRect, sourceRect, Color.White);
+
+        }
+
+
+    }
+            </pre>
+
+            <p>
+                A texture gets passed in containing the image you want to draw, and the sprite has a position to be drawn at. As a bonus it has an offset so if you want to draw the sprite
+                somewhere and then offset the sprite from that position, you can do that (Trust me it would be so clunky if you couldnt effectivly change the sprite's origin like this).
+                The sprite also implements the Drawable interface which is where the Draw(SpriteBatch spritebatch) method comes from. I chose an interface here since not all drawable things
+                need to have specific properties (like a position, or a texture), you could draw something at a fixed position and as such it wouldn't need a position, or something could draw
+                without the use of a texture (such as drawing lines or shape outlines). This makes the interface ideal since I can enforce a uniform "Draw" method without it requiring anything
+                particular about the properties of the thing implementing it. But this also brings up a good point, how did I know I need to make an interface for this? Just experience and 
+                guessing. I know there are going to be other drawable components that will follow this interface since I have worked on projects like this before. Now if this was my first time,
+                I would say the correct move is not implementing an interface like this until you see a pattern forming in your code. Then you go back and refactor knowing for certain how things
+                will need to be laid out, no use trying to predict the future.
+            </p>
+
+            <p>
+                So this implementation is super cozy, everything is simple and well defined but unfortunately there is a small issue here. If I used this Sprite for every sprite in the 
+                game (or maybe even half depending, on how many are active) the performance would most likely tank. This goes back to understanding how the rendering process works. This doesn't
+                even need to go as deep as to talk about quads, and verticies, and index buffers and the like. Basically: when asking the SpriteBatch to draw anything, the texture information has to be
+                sent to the when the drawing actually happens GPU because how else is the GPU going to draw it. By using lots of small textures to draw things, you'll be effectivly maximizing
+                the time spent sending data from the CPU to the GPU which is just wasted time. This doesn't mean you can't ever use small textures but by and large you want to avoid it. This leads
+                excellently into the next topic:
+            </p>
+
+            <h2>Texture Atlases</h2>
+            <p>
+                
+            </p>
+
+        </div>
+
+        <footer>
+            <ul>
+                <li>Some footer info</li>
+                <li>My contact info idk</li>
+                <li>Social media I dont have</li>
+                <li>other links?</li>
+                <li>a link to a contact me page?</li>
+                <li>Other</li>
+            </ul>
+        </footer>
+
+        
+    </body>
+</html>
